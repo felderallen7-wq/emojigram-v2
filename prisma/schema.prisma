@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String    @id @default(cuid())
+  displayName String
+  avatarEmoji String
+  createdAt   DateTime  @default(now())
+  messages    Message[]
+}
+
+model Room {
+  id          String    @id
+  name        String
+  emoji       String
+  description String
+  messages    Message[]
+}
+
+model Message {
+  id           String   @id @default(cuid())
+  roomId       String
+  userId       String
+  originalText String
+  emojiText    String?
+  createdAt    DateTime @default(now())
+  room         Room     @relation(fields: [roomId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([roomId, createdAt])
+}
