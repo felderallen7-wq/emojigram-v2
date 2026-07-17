@@ -16,6 +16,23 @@ describe('phraseOverride', () => {
     expect(phraseOverride('clock that tea sis')).toBe('🕰️👉☕');
   });
 
+  it('maps a standalone "67" to the six-seven sequence', () => {
+    expect(phraseOverride('67')).toBe('6🫲🤪🫱7');
+    expect(phraseOverride('lol 67')).toBe('6🫲🤪🫱7');
+    expect(phraseOverride('67 fr')).toBe('6🫲🤪🫱7');
+  });
+
+  it('does not fire "67" inside a larger number', () => {
+    expect(phraseOverride('1967')).toBeNull();
+    expect(phraseOverride('i am 670 years old')).toBeNull();
+    expect(phraseOverride('677')).toBeNull();
+  });
+
+  it('matches phrases on word boundaries, not loose substrings', () => {
+    // "don't like your dog" is about the dog, not "you" — should NOT trigger.
+    expect(phraseOverride("i don't like your dog")).toBeNull();
+  });
+
   it('returns null when no override phrase is present', () => {
     expect(phraseOverride('pizza tonight?')).toBeNull();
     expect(phraseOverride('i like you')).toBeNull();
